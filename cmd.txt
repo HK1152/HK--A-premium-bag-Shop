@@ -1,0 +1,17 @@
+npm init -y
+
+npm i express mongoose ejs 
+npm i jsonwebtoken cookie-parser bcrypt dotenv
+npm i multer
+npm i debug
+
+check development said 
+    1.cmd
+        "set DEBUG=development:*"
+        "set  NODE_ENV=development"
+    2.powersell
+        "$env:NODE_ENV = "development" "
+        "$env:DEBUG="development:*" "
+
+npm i config
+npm i express-session connect-flash

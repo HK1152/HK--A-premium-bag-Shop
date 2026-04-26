@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wishlist - hk</title>
+    <%- include('./partials/theme-head') %>
+</head>
+
+<body class="flex flex-col min-h-screen">
+    <%- include('./partials/header') %>
+
+    <main class="flex-grow mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-20 pt-10 w-full">
+        <div class="mb-10 flex items-center justify-between border-b border-stone-200 pb-6">
+            <div>
+                <h1 class="text-4xl font-semibold tracking-wide text-stone-900">Wishlist (<span id="wishlist-count">0</span>)</h1>
+                <p class="mt-2 text-stone-500 text-base">Your curated collection of premium pieces.</p>
+            </div>
+            <button onclick="clearWishlist()" class="hk-btn-outline px-6 py-2">Clear All</button>
+        </div>
+
+        <div id="empty-wishlist" class="hidden text-center py-20">
+            <i class="ri-heart-3-line text-6xl text-stone-300 mb-4 inline-block"></i>
+            <h2 class="text-xl font-medium text-stone-700">Your wishlist is empty</h2>
+            <p class="text-stone-500 mt-2">Discover premium products and add them to your wishlist.</p>
+            <a href="/shop" class="hk-btn mt-6">Explore Collection</a>
+        </div>
+
+        <div id="wishlist-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+            <% if (products && products.length > 0) { %>
+                <% products.forEach(function(product, index){ %>
+                    <article class="group relative flex flex-col hidden wishlist-item" data-product-id="<%= product._id %>">
+                        <!-- Image Container utilizing product model colors -->
+                        <div class="relative flex h-[250px] w-full items-center justify-center overflow-hidden rounded bg-stone-100 p-6 transition group-hover:shadow-sm" style="background-color: <%= product.bgcolor %>">
+                            
+                            <% if(product.discount && product.discount > 0) { %>
+                                <div class="absolute left-3 top-3 rounded bg-primary px-3 py-1 text-xs font-semibold text-white">
+                                    -<%= product.discount %>%
+                                </div>
+                            <% } %>
+                            
+                            <div class="absolute right-3 top-3 flex flex-col gap-2">
+                                <button onclick="removeFromWishlist('<%= product._id %>')" class="flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-sm hover:text-red-500 transition" title="Remove from wishlist">
+                                    <i class="ri-delete-bin-line"></i>
+                                </button>
+                                <button class="flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-sm hover:text-primary transition"><i class="ri-eye-line"></i></button>
+                            </div>
+                            
+                            <img class="h-full object-contain transition-transform duration-500 group-hover:scale-105" src="data:image/jpeg;base64,<%= product.image.toString('base64') %>" alt="<%= product.name %>">
+                            
+                            <!-- Add To Cart Overlay -->
+                            <a href="/add-to-cart/<%= product._id %>" class="absolute bottom-0 left-0 w-full bg-black text-white text-center py-3 opacity-0 group-hover:opacity-100 transition-opacity font-medium cursor-pointer hover:bg-stone-800">
+                                Add To Cart
+                            </a>
+                        </div>
+                        
+                        <!-- Product Details using product panel and text colors -->
+                        <div class="mt-4 flex flex-col gap-2 rounded p-3" style="background-color: <%= product.panelcolor || 'transparent' %>; color: <%= product.textcolor || '#000' %>">
+                            <h3 class="font-medium text-base truncate"><%= product.name %></h3>
+                            <div class="flex items-center gap-3">
+                                <span class="font-medium text-primary">₹<%= product.price - (product.discount || 0) %></span>
+                                <% if(product.discount && product.discount > 0) { %>
+                                    <span class="text-sm text-stone-400 line-through">₹<%= product.price %></span>
+                                <% } %>
+                            </div>
+                        </div>
+                    </article>
+                <% }) %>
+            <% } %>
+        </div>
+
+    </main>
+
+    <%- include('./partials/footer') %>
+
+    <script>
+        function updateWishlistUI() {
+            let wishlist = JSON.parse(localStorage.getItem('hk_wishlist')) || [];
+            const countEl = document.getElementById('wishlist-count');
+            const emptyEl = document.getElementById('empty-wishlist');
+            const gridEl = document.getElementById('wishlist-grid');
+            
+            countEl.textContent = wishlist.length;
+
+            if (wishlist.length === 0) {
+                emptyEl.classList.remove('hidden');
+                gridEl.classList.add('hidden');
+            } else {
+                emptyEl.classList.add('hidden');
+                gridEl.classList.remove('hidden');
+                
+                // Hide all first
+                document.querySelectorAll('.wishlist-item').forEach(item => {
+                    item.classList.add('hidden');
+                });
+                
+                // Show only liked ones
+                wishlist.forEach(id => {
+                    const el = document.querySelector(`.wishlist-item[data-product-id="${id}"]`);
+                    if(el) el.classList.remove('hidden');
+                });
+            }
+        }
+
+        function removeFromWishlist(productId) {
+            let wishlist = JSON.parse(localStorage.getItem('hk_wishlist')) || [];
+            const index = wishlist.indexOf(productId);
+            if (index > -1) {
+                wishlist.splice(index, 1);
+                localStorage.setItem('hk_wishlist', JSON.stringify(wishlist));
+                updateWishlistUI();
+            }
+        }
+
+        function clearWishlist() {
+            localStorage.removeItem('hk_wishlist');
+            updateWishlistUI();
+        }
+
+        document.addEventListener('DOMContentLoaded', updateWishlistUI);
+    </script>
+</body>
+
+</html>

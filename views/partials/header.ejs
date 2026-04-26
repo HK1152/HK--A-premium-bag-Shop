@@ -1,0 +1,85 @@
+<div class="bg-black text-white py-3 text-sm">
+    <div class="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        <div class="flex-1 text-center">
+            Summer Sale For All Swim Suits And Free Express Delivery - OFF 50%! 
+            <a href="/shop" class="font-semibold underline ml-2">ShopNow</a>
+        </div>
+        <div class="hidden sm:block">
+            <select class="bg-black text-white border-none outline-none cursor-pointer">
+                <option>English</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<header class="border-b border-stone-200 bg-white sticky top-0 z-50">
+    <nav class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8 mt-2 mb-2">
+        <!-- Logo -->
+        <a href="<% if ((typeof owner !=='undefined' && owner) || (typeof user !=='undefined' && user) || (typeof loggedin !=='undefined' && loggedin)) { %>/shop<% } else { %>/<% } %>" class="text-2xl font-bold tracking-wider text-black">
+            hk
+        </a>
+
+        <!-- Main Links -->
+        <div class="hidden md:flex items-center gap-8 text-sm font-medium">
+            <a href="<% if ((typeof owner !=='undefined' && owner) || (typeof user !=='undefined' && user) || (typeof loggedin !=='undefined' && loggedin)) { %>/shop<% } else { %>/<% } %>" class="hover:underline underline-offset-4">Home</a>
+            <a href="/contact" class="hover:underline underline-offset-4">Contact</a>
+            <a href="/about" class="hover:underline underline-offset-4">About</a>
+            <% if (!((typeof owner !=='undefined' && owner) || (typeof user !=='undefined' || (typeof loggedin !=='undefined' && loggedin)))) { %>
+                <a href="/users/register" class="hover:underline underline-offset-4">Sign Up</a>
+            <% } %>
+        </div>
+
+        <!-- Right Side -->
+        <div class="flex items-center gap-4 sm:gap-6">
+            <!-- Search -->
+            <div class="hidden sm:flex items-center bg-[#f5f5f5] rounded px-3 py-2 w-64">
+                <input type="text" placeholder="What are you looking for?" class="bg-transparent border-none outline-none text-sm w-full placeholder:text-stone-500">
+                <i class="ri-search-line text-lg text-stone-600"></i>
+            </div>
+
+            <!-- Icons -->
+            <div class="flex items-center gap-4">
+                <% if ((typeof owner !=='undefined' && owner) || (typeof user !=='undefined' || (typeof loggedin !=='undefined' && loggedin))) { %>
+                    
+                    <% if (!(typeof owner !=='undefined' && owner)) { %>
+                        <a href="/wishlist" class="text-2xl hover:text-primary"><i class="ri-heart-line"></i></a>
+                        <a href="/cart" class="relative text-2xl hover:text-primary">
+                            <i class="ri-shopping-cart-2-line"></i>
+                            <% if (typeof user !== 'undefined' && user && user.cart && user.cart.length > 0) { %>
+                                <span class="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white"><%= user.cart.length %></span>
+                            <% } %>
+                        </a>
+                    <% } %>
+                    
+                    <!-- User Dropdown (Hover/Click) -->
+                    <div class="relative group">
+                        <button class="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-white hover:bg-primary-hover overflow-hidden">
+                            <% if (typeof owner !=='undefined' && owner && owner.picture) { %>
+                                <img src="data:image/jpeg;base64,<%= owner.picture.toString('base64') %>" class="w-full h-full object-cover" alt="Profile">
+                            <% } else if (typeof user !=='undefined' && user && user.picture) { %>
+                                <img src="data:image/jpeg;base64,<%= user.picture.toString('base64') %>" class="w-full h-full object-cover" alt="Profile">
+                            <% } else { %>
+                                <i class="ri-user-line text-lg"></i>
+                            <% } %>
+                        </button>
+                        <div class="absolute right-0 top-full mt-2 w-56 rounded bg-black/95 p-2 text-white opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all backdrop-blur-md shadow-lg border border-white/10">
+                            <ul class="flex flex-col text-sm">
+                                <% if (typeof owner !=='undefined' && owner) { %>
+                                    <li><a href="/owners/manage" class="flex items-center gap-3 rounded px-4 py-2 hover:bg-white/20 transition"><i class="ri-user-settings-line text-lg"></i> Manage Admin</a></li>
+                                    <li><a href="/owners/products/create" class="flex items-center gap-3 rounded px-4 py-2 hover:bg-white/20 transition"><i class="ri-add-circle-line text-lg"></i> Add Product</a></li>
+                                    <li><a href="/owners/logout" class="flex items-center gap-3 rounded px-4 py-2 hover:bg-white/20 transition"><i class="ri-logout-box-r-line text-lg"></i> Logout</a></li>
+                                <% } else { %>
+                                    <li><a href="/users/manage" class="flex items-center gap-3 rounded px-4 py-2 hover:bg-white/20 transition"><i class="ri-user-line text-lg"></i> Manage My Account</a></li>
+                                    <li><a href="/orders" class="flex items-center gap-3 rounded px-4 py-2 hover:bg-white/20 transition"><i class="ri-shopping-bag-line text-lg"></i> My Order</a></li>
+                                    <li><a href="/logout" class="flex items-center gap-3 rounded px-4 py-2 hover:bg-white/20 transition"><i class="ri-logout-box-r-line text-lg"></i> Logout</a></li>
+                                <% } %>
+                            </ul>
+                        </div>
+                    </div>
+                <% } else { %>
+                    <a href="/users/login" class="text-2xl hover:text-primary"><i class="ri-user-line"></i></a>
+                <% } %>
+            </div>
+        </div>
+    </nav>
+</header>

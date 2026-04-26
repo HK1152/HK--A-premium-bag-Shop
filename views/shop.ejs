@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>hk - Shop</title>
+    <%- include('./partials/theme-head') %>
+</head>
+
+<body class="flex flex-col min-h-screen">
+    <%- include('./partials/header') %>
+
+    <% if (typeof success !=='undefined' && success && success.length> 0) { %>
+        <div class="fixed left-1/2 top-24 z-50 -translate-x-1/2 rounded border border-emerald-200 bg-emerald-50 px-6 py-3 text-sm font-semibold text-emerald-700 shadow-lg">
+            <%= success %>
+        </div>
+    <% } %>
+
+    <main class="flex-grow mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-20 pt-10">
+        
+        <div class="mb-10 border-b border-stone-200 pb-6">
+            <h1 class="text-4xl font-semibold tracking-wide text-stone-900">Our Premium Collection</h1>
+            <p class="mt-2 text-stone-500 text-base">Explore our hk range of high-quality bags tailored for your everyday needs.</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+            <% if (products && products.length > 0) { %>
+                <% products.forEach(function(product, index){ %>
+                    <article class="group relative flex flex-col">
+                        <!-- Image Container utilizing product model colors -->
+                        <div class="relative flex h-[250px] w-full items-center justify-center overflow-hidden rounded bg-stone-100 p-6 transition group-hover:shadow-sm" style="background-color: <%= product.bgcolor %>">
+                            
+                            <% if(product.discount && product.discount > 0) { %>
+                                <div class="absolute left-3 top-3 rounded bg-primary px-3 py-1 text-xs font-semibold text-white">
+                                    -<%= product.discount %>%
+                                </div>
+                            <% } %>
+                            
+                            <div class="absolute right-3 top-3 flex flex-col gap-2">
+                                <button onclick="toggleLike('<%= product._id %>', this)" class="flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-sm hover:text-primary transition">
+                                    <i class="ri-heart-line like-icon" data-product-id="<%= product._id %>"></i>
+                                </button>
+                                <button class="flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-sm hover:text-primary transition"><i class="ri-eye-line"></i></button>
+                            </div>
+                            
+                            <img class="h-full object-contain transition-transform duration-500 group-hover:scale-105" src="data:image/jpeg;base64,<%= product.image.toString('base64') %>" alt="<%= product.name %>">
+                            
+                            <!-- Add To Cart Overlay -->
+                            <a href="/add-to-cart/<%= product._id %>" class="absolute bottom-0 left-0 w-full bg-black text-white text-center py-3 opacity-0 group-hover:opacity-100 transition-opacity font-medium cursor-pointer hover:bg-stone-800">
+                                Add To Cart
+                            </a>
+                        </div>
+                        
+                        <!-- Product Details using product panel and text colors -->
+                        <div class="mt-4 flex flex-col gap-2 rounded p-3" style="background-color: <%= product.panelcolor || 'transparent' %>; color: <%= product.textcolor || '#000' %>">
+                            <h3 class="font-medium text-base truncate"><%= product.name %></h3>
+                            <div class="flex items-center gap-3">
+                                <span class="font-medium text-primary">₹<%= product.price - (product.discount || 0) %></span>
+                                <% if(product.discount && product.discount > 0) { %>
+                                    <span class="text-sm text-stone-400 line-through">₹<%= product.price %></span>
+                                <% } %>
+                            </div>
+                            <!-- Static Rating Stars for UI demo -->
+                            <div class="flex items-center gap-1 text-yellow-400 text-sm">
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-fill"></i>
+                                <i class="ri-star-half-fill"></i>
+                                <span class="text-stone-400 text-xs ml-1">(<%= 60 + index * 15 %>)</span>
+                            </div>
+                        </div>
+                    </article>
+                <% }) %>
+            <% } else { %>
+                <div class="col-span-full text-center py-20">
+                    <i class="ri-shopping-bag-3-line text-6xl text-stone-300 mb-4 inline-block"></i>
+                    <h2 class="text-xl font-medium text-stone-700">No products found</h2>
+                    <p class="text-stone-500 mt-2">We're currently restocking our premium collection. Check back soon!</p>
+                </div>
+            <% } %>
+        </div>
+
+    </main>
+
+    <%- include('./partials/footer') %>
+
+    <script>
+        function toggleLike(productId, btnElement) {
+            let wishlist = JSON.parse(localStorage.getItem('hk_wishlist')) || [];
+            const index = wishlist.indexOf(productId);
+            const icon = btnElement.querySelector('.like-icon');
+            
+            if (index > -1) {
+                wishlist.splice(index, 1);
+                icon.classList.remove('ri-heart-fill', 'text-primary');
+                icon.classList.add('ri-heart-line');
+            } else {
+                wishlist.push(productId);
+                icon.classList.remove('ri-heart-line');
+                icon.classList.add('ri-heart-fill', 'text-primary');
+            }
+            localStorage.setItem('hk_wishlist', JSON.stringify(wishlist));
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            let wishlist = JSON.parse(localStorage.getItem('hk_wishlist')) || [];
+            document.querySelectorAll('.like-icon').forEach(icon => {
+                const pid = icon.getAttribute('data-product-id');
+                if(wishlist.includes(pid)) {
+                    icon.classList.remove('ri-heart-line');
+                    icon.classList.add('ri-heart-fill', 'text-primary');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - hk</title>
+    <%- include('./partials/theme-head') %>
+</head>
+
+<body class="flex flex-col min-h-screen">
+    <%- include('./partials/header') %>
+
+    <% let showLogin=(typeof error !=='undefined' && error && error.length> 0) || (typeof success !=='undefined' && success && success.length > 0); %>
+
+    <% if(error && error.length> 0){ %>
+        <div class="fixed left-1/2 top-24 z-50 -translate-x-1/2 rounded border border-red-200 bg-red-50 px-6 py-3 text-sm font-semibold text-red-600 shadow-lg">
+            <%= error %>
+        </div>
+    <% } %>
+    
+    <% if(success && success.length> 0){ %>
+        <div class="fixed left-1/2 top-24 z-50 -translate-x-1/2 rounded border border-emerald-200 bg-emerald-50 px-6 py-3 text-sm font-semibold text-emerald-700 shadow-lg">
+            <%= success %>
+        </div>
+    <% } %>
+
+    <main class="flex-grow flex items-center justify-center pt-10 pb-20">
+        <div class="max-w-7xl mx-auto w-full flex flex-col lg:flex-row items-center gap-10 lg:gap-20">
+            
+            <!-- Left Side Image -->
+            <div class="hidden lg:flex w-full lg:w-1/2 bg-[#CBE4E8] rounded-r rounded-l-none h-[600px] items-center justify-center relative overflow-hidden">
+                <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?q=80&w=1000&auto=format&fit=crop" class="w-full h-full object-cover mix-blend-multiply opacity-80" alt="Admin access">
+            </div>
+
+            <!-- Right Side Forms -->
+            <div class="w-full lg:w-1/2 px-4 sm:px-10 lg:px-0 max-w-md">
+                
+                <!-- Register Section -->
+                <div id="register-form-container" class="<%= showLogin ? 'hidden' : 'block' %> transition-all duration-300">
+                    <h2 class="text-3xl font-medium text-black mb-2 tracking-wide">Owner registration</h2>
+                    <p class="text-sm text-black mb-8">Register a new administrative owner.</p>
+
+                    <form autocomplete="off" action="/owners/create" method="post" class="space-y-6">
+                        <div>
+                            <input class="hk-input" type="text" placeholder="Full Name" name="fullname" required minlength="3">
+                        </div>
+                        <div>
+                            <input class="hk-input" type="email" placeholder="Email Address" name="email" required>
+                        </div>
+                        <div>
+                            <input class="hk-input" type="password" placeholder="Password" name="password" required>
+                        </div>
+                        <button class="hk-btn w-full mt-8" type="submit">
+                            Register Admin
+                        </button>
+                    </form>
+
+                    <div class="mt-4 flex flex-col gap-4">
+                        <p class="text-center text-sm text-stone-600 mt-4">
+                            Already have an account?
+                            <button onclick="toggleForms()" type="button" class="font-medium text-black underline underline-offset-4 ml-2 hover:text-primary">Login Admin</button>
+                        </p>
+                        <a href="/users/login" class="text-center text-xs font-semibold text-stone-500 hover:text-primary transition mt-2">
+                            Go to User Login <i class="ri-arrow-right-line"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Login Section -->
+                <div id="login-form-container" class="<%= showLogin ? 'block' : 'hidden' %> transition-all duration-300">
+                    <h2 class="text-3xl font-medium text-black mb-2 tracking-wide">Secure owner sign in</h2>
+                    <p class="text-sm text-black mb-8">Protected access for administrative owners only.</p>
+
+                    <form autocomplete="off" action="/owners/login" method="post" class="space-y-6">
+                        <div>
+                            <input class="hk-input" type="email" placeholder="Email Address" name="email" required>
+                        </div>
+                        <div>
+                            <input class="hk-input" type="password" placeholder="Password" name="password" required>
+                        </div>
+                        
+                        <div class="flex items-center justify-between mt-8">
+                            <button class="hk-btn px-12" type="submit">
+                                Log In
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="mt-8 text-center text-sm text-stone-600 flex flex-col gap-2">
+                        <p>
+                            Don't have an account?
+                            <button onclick="toggleForms()" type="button" class="font-medium text-black underline underline-offset-4 ml-2 hover:text-primary">Create Admin</button>
+                        </p>
+                        <p class="mt-2 text-center text-xs text-stone-400">
+                            <i class="ri-lock-2-line"></i> This area is strictly protected.
+                        </p>
+                        <a href="/users/login" class="text-center text-xs font-semibold text-stone-500 hover:text-primary transition mt-4">
+                            Go to User Login <i class="ri-arrow-right-line"></i>
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <%- include('./partials/footer') %>
+
+    <script>
+        function toggleForms() {
+            const registerForm = document.getElementById('register-form-container');
+            const loginForm = document.getElementById('login-form-container');
+
+            if (registerForm.classList.contains('hidden')) {
+                registerForm.classList.remove('hidden');
+                loginForm.classList.add('hidden');
+            } else {
+                registerForm.classList.add('hidden');
+                loginForm.classList.remove('hidden');
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Account - hk</title>
+    <%- include('./partials/theme-head') %>
+</head>
+
+<body class="flex flex-col min-h-screen">
+    <%- include('./partials/header') %>
+
+    <% if(typeof error !== 'undefined' && error && error.length > 0){ %>
+        <div class="fixed left-1/2 top-24 z-50 -translate-x-1/2 rounded border border-red-200 bg-red-50 px-6 py-3 text-sm font-semibold text-red-600 shadow-lg">
+            <%= error %>
+        </div>
+    <% } %>
+    
+    <% if(typeof success !== 'undefined' && success && success.length > 0){ %>
+        <div class="fixed left-1/2 top-24 z-50 -translate-x-1/2 rounded border border-emerald-200 bg-emerald-50 px-6 py-3 text-sm font-semibold text-emerald-700 shadow-lg">
+            <%= success %>
+        </div>
+    <% } %>
+
+    <main class="flex-grow mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 w-full">
+        <section class="mb-8 border-b border-stone-200 pb-6">
+            <p class="text-sm font-semibold uppercase tracking-widest text-stone-500 mb-2">My Account</p>
+            <h1 class="text-4xl font-semibold tracking-wide">Manage Profile</h1>
+            <p class="mt-4 max-w-2xl text-base leading-7 text-stone-600">Update your personal details and shipping address to ensure smooth deliveries.</p>
+        </section>
+
+        <section class="grid gap-8 lg:grid-cols-[250px_minmax(0,1fr)]">
+            <aside class="h-fit py-6 hidden lg:block">
+                <p class="text-sm font-semibold uppercase tracking-widest text-stone-500 mb-4">Dashboard</p>
+                <div class="space-y-2 text-sm font-medium">
+                    <a class="flex items-center gap-3 rounded bg-black px-4 py-3 text-white" href="/users/manage"><i class="ri-user-settings-line text-lg"></i> Manage Profile</a>
+                    <a class="flex items-center gap-3 rounded px-4 py-3 text-stone-600 transition hover:bg-stone-100 hover:text-primary" href="/cart"><i class="ri-shopping-cart-2-line text-lg"></i> My Cart</a>
+                </div>
+            </aside>
+
+            <section class="py-6">
+                <div class="max-w-2xl">
+                    <form autocomplete="off" action="/users/manage" method="POST" enctype="multipart/form-data" class="space-y-8 border border-stone-200 p-8 rounded shadow-sm">
+                        
+                        <!-- Profile Picture -->
+                        <div class="flex items-center gap-8 border-b border-stone-200 pb-6">
+                            <div class="w-24 h-24 rounded-full bg-stone-100 border border-stone-200 flex items-center justify-center overflow-hidden shrink-0">
+                                <% if (user && user.picture) { %>
+                                    <img class="w-full h-full object-cover" src="data:image/jpeg;base64,<%= user.picture.toString('base64') %>" alt="Profile Picture">
+                                <% } else { %>
+                                    <i class="ri-user-3-line text-4xl text-stone-400"></i>
+                                <% } %>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-medium mb-2">Profile Photo</h3>
+                                <p class="text-sm text-stone-500 mb-3">Upload a new profile photo (JPG, PNG).</p>
+                                <label class="inline-flex items-center gap-2 px-4 py-2 bg-stone-100 border border-stone-300 rounded text-sm font-medium cursor-pointer hover:bg-stone-200 transition">
+                                    <i class="ri-upload-2-line"></i> Choose File
+                                    <input type="file" name="picture" class="hidden" accept="image/*">
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="space-y-6">
+                            <!-- Full Name -->
+                            <div>
+                                <label class="block text-sm font-medium text-stone-700 mb-2">Full Name</label>
+                                <input class="hk-input w-full bg-stone-50 border border-stone-300" type="text" placeholder="Enter your full name" name="fullname" value="<%= user ? user.fullname : '' %>" required>
+                            </div>
+
+                            <!-- Email (Readonly) -->
+                            <div>
+                                <label class="block text-sm font-medium text-stone-700 mb-2">Email Address (Cannot be changed)</label>
+                                <input class="hk-input w-full bg-stone-100 border border-stone-300 text-stone-500 cursor-not-allowed" type="email" value="<%= user ? user.email : '' %>" readonly>
+                            </div>
+
+                            <!-- Address -->
+                            <div>
+                                <label class="block text-sm font-medium text-stone-700 mb-2">Shipping Address</label>
+                                <textarea class="hk-input w-full bg-stone-50 border border-stone-300 min-h-[120px] resize-y" placeholder="Enter your full shipping address (Street, City, State, ZIP code)" name="address" required><%= user ? user.address : '' %></textarea>
+                                <p class="text-xs text-stone-500 mt-2">Add your primary shipping address. This will be used for your orders.</p>
+                            </div>
+                        </div>
+
+                        <div class="pt-4 flex justify-end">
+                            <button type="submit" class="hk-btn px-10 py-3">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </section>
+    </main>
+
+    <%- include('./partials/footer') %>
+</body>
+
+</html>

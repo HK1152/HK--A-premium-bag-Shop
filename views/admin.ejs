@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - hk</title>
+    <%- include('./partials/theme-head') %>
+</head>
+
+<body class="flex flex-col min-h-screen">
+    <%- include('./partials/header') %>
+
+    <main class="flex-grow mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+        <section class="mb-8">
+            <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+                <div>
+                    <p class="text-sm font-semibold uppercase tracking-widest text-stone-500 mb-2">Seller Studio</p>
+                    <h1 class="text-4xl font-semibold tracking-wide">Inventory Management</h1>
+                    <p class="mt-4 max-w-2xl text-base leading-7 text-stone-600">Manage your hk products, add new stock, and maintain the storefront's premium aesthetic.</p>
+                </div>
+                <a href="/owners/products/create" class="hk-btn">Create Product</a>
+            </div>
+        </section>
+
+        <section class="grid gap-8 lg:grid-cols-[250px_minmax(0,1fr)]">
+            <aside class="h-fit py-6 hidden lg:block">
+                <p class="text-sm font-semibold uppercase tracking-widest text-stone-500 mb-4">Dashboard</p>
+                <div class="space-y-2 text-sm font-medium">
+                    <a class="flex items-center gap-3 rounded bg-black px-4 py-3 text-white" href="/owners/admin"><i class="ri-box-3-line text-lg"></i> All Products</a>
+                    <a class="flex items-center gap-3 rounded px-4 py-3 text-stone-600 transition hover:bg-stone-100 hover:text-primary" href="/owners/products/create"><i class="ri-add-circle-line text-lg"></i> Create New</a>
+                    <a class="flex items-center gap-3 rounded px-4 py-3 text-stone-600 transition hover:bg-stone-100 hover:text-primary" href="/owners/manage"><i class="ri-user-settings-line text-lg"></i> Manage Profile</a>
+                </div>
+            </aside>
+
+            <section class="py-6">
+                <div class="mb-8 flex flex-col gap-4 border-b border-stone-200 pb-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                        <h2 class="text-2xl font-medium tracking-wide">Manage active products</h2>
+                    </div>
+                    <a href="#" class="inline-flex items-center gap-2 rounded border border-red-500 bg-white px-4 py-2 text-sm font-medium text-red-500 transition hover:bg-red-500 hover:text-white">
+                        <i class="ri-delete-bin-line"></i> Delete All
+                    </a>
+                </div>
+
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                    <% if (products && products.length> 0) { %>
+                        <% products.forEach(function(product) { %>
+                            <article class="group relative flex flex-col border border-stone-100 rounded">
+                                <div class="relative flex h-[220px] w-full items-center justify-center overflow-hidden rounded-t p-6 transition" style="background-color: <%= product.bgcolor %>">
+                                    <div class="absolute right-3 top-3">
+                                        <a href="/products/delete/<%= product._id %>" class="flex h-8 w-8 items-center justify-center rounded-full bg-white text-red-500 shadow-sm hover:bg-red-500 hover:text-white transition">
+                                            <i class="ri-delete-bin-3-line"></i>
+                                        </a>
+                                    </div>
+                                    <img class="h-full object-contain transition-transform duration-500 group-hover:scale-105" src="data:image/jpeg;base64,<%= product.image.toString('base64') %>" alt="<%= product.name %>">
+                                </div>
+                                <div class="mt-2 flex flex-col gap-1 p-4" style="background-color: <%= product.panelcolor || 'transparent' %>; color: <%= product.textcolor || '#000' %>">
+                                    <h3 class="font-medium text-base truncate"><%= product.name %></h3>
+                                    <div class="flex items-center gap-3 mt-1">
+                                        <span class="font-medium text-primary">₹<%= product.price - (product.discount || 0) %></span>
+                                        <% if(product.discount && product.discount > 0) { %>
+                                            <span class="text-xs text-stone-400 line-through">₹<%= product.price %></span>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            </article>
+                        <% }) %>
+                    <% } %>
+
+                    <a href="/owners/products/create" class="flex min-h-[300px] flex-col items-center justify-center border-2 border-dashed border-stone-300 rounded p-8 text-center transition hover:border-primary hover:bg-stone-50">
+                        <div class="flex h-12 w-12 items-center justify-center rounded-full bg-black text-white">
+                            <i class="ri-add-line text-xl"></i>
+                        </div>
+                        <h3 class="mt-4 text-xl font-medium text-black">Add Product</h3>
+                        <p class="mt-2 text-sm text-stone-500">Expand your collection.</p>
+                    </a>
+                </div>
+            </section>
+        </section>
+    </main>
+    <%- include('./partials/footer') %>
+</body>
+
+</html>
