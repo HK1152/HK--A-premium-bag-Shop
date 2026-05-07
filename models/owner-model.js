@@ -15,7 +15,9 @@ const ownerSchema = mongoose.Schema({
         default: []
     },
     picture: Buffer,
-    gstin: String
+    gstin: String,
+    resetPasswordToken: String,
+    resetPasswordExpires: Date,
 });
 
 

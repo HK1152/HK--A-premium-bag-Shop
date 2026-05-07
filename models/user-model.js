@@ -24,7 +24,9 @@ const userSchema = mongoose.Schema({
     },
     contact: Number,
     picture: Buffer,
-    address: String
+    address: String,
+    resetPasswordToken: String,
+    resetPasswordExpires: Date,
 })
 
 
